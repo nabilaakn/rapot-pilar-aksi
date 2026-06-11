@@ -64,7 +64,7 @@ function showReportPage(idx, btn) {
 // ── RENDER: TOP PERFORMERS TABLE ─────────────────────────────
 function renderTopPerformers() {
     const tbody = document.getElementById('top-performers-table');
-    const withScore = MOCK_MEMBERS.filter(m => m.score !== null);
+    const withScore = MEMBERS_DATA.filter(m => m.score !== null);
     const sorted = withScore.sort((a, b) => b.score - a.score).slice(0, 10);
 
     if (sorted.length === 0) {
@@ -91,17 +91,16 @@ function renderTopPerformers() {
 // ── RENDER: DEPARTMENT RANKINGS ──────────────────────────────
 function renderDeptRankings() {
     const el = document.getElementById('dept-ranking-list');
-    // Hitung avg dari member yang sudah punya score
     const deptAvgs = {};
-    MOCK_DEPTS.forEach(d => { deptAvgs[d.name] = { sum: 0, count: 0 }; });
-    MOCK_MEMBERS.forEach(m => {
-        if (m.score !== null && deptAvgs[m.dept]) {
-            deptAvgs[m.dept].sum += m.score;
-            deptAvgs[m.dept].count += 1;
+    DEPTS_DATA.forEach(d => { deptAvgs[d.name] = { sum: 0, count: 0 }; });
+    MEMBERS_DATA.forEach(m => {
+        if (m.score !== null && deptAvgs[m.dept_name]) {
+            deptAvgs[m.dept_name].sum += parseFloat(m.score);
+            deptAvgs[m.dept_name].count += 1;
         }
     });
 
-    const depts = MOCK_DEPTS.map(d => ({
+    const depts = DEPTS_DATA.map(d => ({
         ...d,
         computedAvg: deptAvgs[d.name].count > 0
             ? +(deptAvgs[d.name].sum / deptAvgs[d.name].count).toFixed(1)
@@ -120,13 +119,12 @@ function renderDeptRankings() {
                 </div>
             </div>
             <div style="font-size:14px;font-weight:800;color:var(--text-primary);min-width:40px;text-align:right;">${d.computedAvg ?? '—'}</div>
-            <div style="font-size:11px;color:var(--text-muted);min-width:44px;text-align:right;">${d.members} mbr</div>
+            <div style="font-size:11px;color:var(--text-muted);min-width:44px;text-align:right;">mbr</div>
         </div>
     `).join('');
 }
 
-// ── RENDER: MEMBERS TABLE ────────────────────────────────────
-function renderMembersTable(filteredData = MOCK_MEMBERS) {
+function renderMembersTable(filteredData = MEMBERS_DATA) {
     const tbody = document.getElementById('members-table-body');
     const countEl = document.getElementById('members-count');
     
@@ -146,7 +144,7 @@ function renderMembersTable(filteredData = MOCK_MEMBERS) {
                 </div>
             </td>
             <td style="font-family:monospace;font-size:12px;">${m.nrp}</td>
-            <td>${m.dept}</td>
+            <td>${m.dept_name}</td>
             <td>${m.pos}</td>
             <td>${m.batch}</td>
             <td><b style="color:var(--text-primary)">${m.score ?? '—'}</b></td>
@@ -168,16 +166,13 @@ function renderMembersTable(filteredData = MOCK_MEMBERS) {
     `).join('');
 }
 
-// ── FILTER LOGIC ──────────────────────────────────────────────
 function handleFilters() {
     const dept = document.getElementById('filter-dept').value;
     const batch = document.getElementById('filter-batch').value;
     const band = document.getElementById('filter-band').value;
 
-    const normalizeDept = value => String(value || '').trim().toUpperCase();
-
-    const filtered = MOCK_MEMBERS.filter(m => {
-        const matchDept = !dept || normalizeDept(m.dept) === normalizeDept(dept);
+    const filtered = MEMBERS_DATA.filter(m => {
+        const matchDept = !dept || m.dept_name === dept;
         const matchBatch = !batch || m.batch === batch;
         const matchBand = !band || m.band === band;
         return matchDept && matchBatch && matchBand;
@@ -186,19 +181,16 @@ function handleFilters() {
     renderMembersTable(filtered);
 }
 
-// Update sidebar badge count
 function updateMemberCount() {
     const badge = document.querySelector('.nav-badge');
-    if (badge) badge.textContent = MOCK_MEMBERS.length;
-    // stat card
+    if (badge) badge.textContent = MEMBERS_DATA.length;
     const statVal = document.querySelector('.stat-card.blue .stat-value');
-    if (statVal) statVal.textContent = MOCK_MEMBERS.length;
+    if (statVal) statVal.textContent = MEMBERS_DATA.length;
 }
 
-// ── RENDER: DEPT CARDS ───────────────────────────────────────
 function renderDeptCards() {
     const grid = document.getElementById('dept-cards-grid');
-    grid.innerHTML = MOCK_DEPTS.map(d => `
+    grid.innerHTML = DEPTS_DATA.map(d => `
         <div class="dept-card">
             <div class="dept-icon-wrap">
                 <img src="Logo Departemen/${d.name}.png" alt="${d.name}" style="width:26px;height:26px;object-fit:contain;">
@@ -207,12 +199,64 @@ function renderDeptCards() {
                 <div style="font-size:13px;font-weight:700;color:var(--text-primary);">${d.name}</div>
                 <div style="font-size:11px;color:var(--text-muted);">${d.fullname}</div>
                 <div style="display:flex;gap:12px;margin-top:8px;">
-                    <span style="font-size:11px;color:var(--text-secondary);"><b style="color:var(--text-primary)">${d.members}</b> anggota</span>
-                    <span style="font-size:11px;color:var(--text-secondary);">avg <b style="color:${d.color}">${d.avg ?? '—'}</b></span>
+                    <span style="font-size:11px;color:var(--text-secondary);"><b style="color:var(--text-primary)">—</b> anggota</span>
                 </div>
             </div>
         </div>
     `).join('');
+}
+
+async function submitAssessment() {
+    const memberId = document.getElementById('assessment-member-select').value;
+    const scoreText = document.getElementById('total-score-live').textContent;
+    const score = parseFloat(scoreText);
+
+    const selectedBtns = document.querySelectorAll('.rating-btn.selected');
+    if (!memberId || isNaN(score) || selectedBtns.length < 16) {
+        alert('Harap pilih anggota dan isi semua 16 penilaian!');
+        return;
+    }
+
+    const ratings = Array.from(selectedBtns).map(b => parseInt(b.textContent));
+
+    const notes = {
+        appreciation: document.getElementById('assessment-appreciation').value,
+        suggestions: document.getElementById('assessment-suggestions').value,
+        message: document.getElementById('assessment-message').value
+    };
+
+    let band = 'Good';
+    if (score >= 95) band = 'Outstanding';
+    else if (score >= 85) band = 'Excellent';
+    else if (score >= 75) band = 'Very Good';
+    else if (score >= 65) band = 'Good';
+    else if (score >= 50) band = 'Fair';
+    else band = 'Needs Improvement';
+
+    try {
+        const res = await fetch(`${API_URL}/assessments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ memberId, score, band, ratings, notes })
+        });
+        const data = await res.json();
+        
+        if (!res.ok) throw new Error(data.error);
+        
+        alert(data.message);
+        
+        // Reset form
+        document.querySelectorAll('.rating-btn.selected').forEach(b => b.classList.remove('selected'));
+        document.getElementById('total-score-live').textContent = '0';
+        document.getElementById('assessment-appreciation').value = '';
+        document.getElementById('assessment-suggestions').value = '';
+        document.getElementById('assessment-message').value = '';
+        
+        await refreshData();
+        showPage('dashboard', document.querySelectorAll('.nav-item')[0]);
+    } catch (err) {
+        alert('Gagal menyimpan raport: ' + err.message);
+    }
 }
 
 // ── ASSESSMENT ───────────────────────────────────────────────
@@ -229,10 +273,27 @@ function calcTotalScore() {
         liveEl.textContent = `${selected.length}/16 diisi`;
         return;
     }
-    let total = 0;
-    selected.forEach(b => { total += parseInt(b.textContent); });
-    const score = (total / (16 * 4) * 100).toFixed(1);
-    liveEl.textContent = score;
+    
+    const ratings = Array.from(selected).map(b => parseInt(b.textContent));
+    
+    // Pilar 1: 4 indikator (bobot 22%)
+    const p1Sum = ratings.slice(0, 4).reduce((a, b) => a + b, 0);
+    const p1Score = (p1Sum / 16) * 22;
+    
+    // Pilar 2: 4 indikator (bobot 25%)
+    const p2Sum = ratings.slice(4, 8).reduce((a, b) => a + b, 0);
+    const p2Score = (p2Sum / 16) * 25;
+    
+    // Pilar 3: 4 indikator (bobot 23%)
+    const p3Sum = ratings.slice(8, 12).reduce((a, b) => a + b, 0);
+    const p3Score = (p3Sum / 16) * 23;
+    
+    // Pilar 4: 4 indikator (bobot 30%)
+    const p4Sum = ratings.slice(12, 16).reduce((a, b) => a + b, 0);
+    const p4Score = (p4Sum / 16) * 30;
+
+    const totalScore = (p1Score + p2Score + p3Score + p4Score).toFixed(1);
+    liveEl.textContent = totalScore;
 }
 
 // ══════════════════════════════════════════════════════════
@@ -398,12 +459,14 @@ function initAnalyticsCharts() {
     });
 }
 
+// ── CONFIG ──────────────────────────────────────────────────
+const API_URL = 'http://localhost:5000/api';
+let MEMBERS_DATA = [];
+let DEPTS_DATA = [];
+
 // ── INIT ─────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-    updateMemberCount();
-    renderTopPerformers();
-    renderDeptRankings();
-    renderMembersTable();
+document.addEventListener('DOMContentLoaded', async () => {
+    await refreshData();
     renderDeptCards();
     setTimeout(initDashboardCharts, 100);
 
@@ -416,3 +479,30 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filterBatch) filterBatch.addEventListener('change', handleFilters);
     if (filterBand) filterBand.addEventListener('change', handleFilters);
 });
+
+async function refreshData() {
+    try {
+        const [mRes, dRes] = await Promise.all([
+            fetch(`${API_URL}/members`),
+            fetch(`${API_URL}/departments`)
+        ]);
+        MEMBERS_DATA = await mRes.json();
+        DEPTS_DATA = await dRes.json();
+
+        updateMemberCount();
+        renderTopPerformers();
+        renderDeptRankings();
+        renderMembersTable();
+        populateMemberDropdown();
+    } catch (err) {
+        console.error('Gagal mengambil data:', err);
+    }
+}
+
+function populateMemberDropdown() {
+    const select = document.getElementById('assessment-member-select');
+    if (!select) return;
+
+    select.innerHTML = '<option value="">Pilih Anggota...</option>' + 
+        MEMBERS_DATA.map(m => `<option value="${m.id}">${m.name} (${m.dept_name})</option>`).join('');
+}
