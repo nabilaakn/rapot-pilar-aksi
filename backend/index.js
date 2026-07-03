@@ -39,10 +39,21 @@ app.get('/api/departments', async (req, res) => {
     }
 });
 
+// ── GET: Ambil Assessment Member ───────────────────────
+app.get('/api/assessments/:memberId', async (req, res) => {
+    try {
+        const [rows] = await pool.query('SELECT * FROM assessments WHERE member_id = ? ORDER BY id DESC LIMIT 1', [req.params.memberId]);
+        if (rows.length === 0) return res.json(null);
+        res.json(rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // ── POST: Simpan Nilai Raport (Assessment) ─────────────
 app.post('/api/assessments', async (req, res) => {
     const { memberId, score, band, ratings, notes } = req.body;
-    
+
     if (!memberId || score === undefined || !ratings || ratings.length !== 16) {
         return res.status(400).json({ error: 'Data tidak lengkap. Pastikan 16 indikator sudah diisi.' });
     }
@@ -60,11 +71,11 @@ app.post('/api/assessments', async (req, res) => {
             (member_id, p1_1, p1_2, p1_3, p1_4, p2_1, p2_2, p2_3, p2_4, p3_1, p3_2, p3_3, p3_4, p4_1, p4_2, p4_3, p4_4, total_score, band, appreciation, suggestions, personal_message) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
-                memberId, 
-                ...ratings, 
-                score, band, 
-                notes?.appreciation || '', 
-                notes?.suggestions || '', 
+                memberId,
+                ...ratings,
+                score, band,
+                notes?.appreciation || '',
+                notes?.suggestions || '',
                 notes?.message || ''
             ]
         );

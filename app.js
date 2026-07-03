@@ -550,4 +550,173 @@ function updateReportCover(memberId) {
     if (nameEl) nameEl.textContent = member.name;
     if (infoEl) infoEl.textContent = `${member.nrp} - ${posText}`;
     if (deptEl) deptEl.textContent = `Departemen ${deptFullname}`;
+
+    // Update performance page
+    updateReportPerformance(memberId, member, posText, deptFullname);
+}
+
+async function updateReportPerformance(memberId, member, posText, deptFullname) {
+    const perfInfo = document.getElementById('perf-info-section');
+    if (!perfInfo) return;
+
+    if (!memberId) {
+        perfInfo.innerHTML = '';
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API_URL}/assessments/${memberId}`);
+        const assessment = await res.json();
+
+        let p1Score = 0, p2Score = 0, p3Score = 0, p4Score = 0;
+        let totalScore = 0;
+        let band = 'Pending';
+        if (assessment) {
+            p1Score = [assessment.p1_1, assessment.p1_2, assessment.p1_3, assessment.p1_4].reduce((a, b) => a + b, 0) / 16 * 22;
+            p2Score = [assessment.p2_1, assessment.p2_2, assessment.p2_3, assessment.p2_4].reduce((a, b) => a + b, 0) / 16 * 25;
+            p3Score = [assessment.p3_1, assessment.p3_2, assessment.p3_3, assessment.p3_4].reduce((a, b) => a + b, 0) / 16 * 23;
+            p4Score = [assessment.p4_1, assessment.p4_2, assessment.p4_3, assessment.p4_4].reduce((a, b) => a + b, 0) / 16 * 30;
+            totalScore = (p1Score + p2Score + p3Score + p4Score).toFixed(1);
+            band = assessment.band || member.band;
+        }
+
+        // Calculate Rankings
+        const scoredMembers = MEMBERS_DATA.filter(m => m.score !== null).sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
+        let cabinetRank = '-';
+        if (assessment) {
+            cabinetRank = scoredMembers.findIndex(m => String(m.id) === String(member.id)) + 1;
+        }
+
+        const deptMembers = MEMBERS_DATA.filter(m => m.dept === member.dept);
+        const scoredDeptMembers = deptMembers.filter(m => m.score !== null).sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
+        let deptRank = '-';
+        if (assessment) {
+            deptRank = scoredDeptMembers.findIndex(m => String(m.id) === String(member.id)) + 1;
+        }
+
+        let deptAvg = '-';
+        if (scoredDeptMembers.length > 0) {
+            const sum = scoredDeptMembers.reduce((acc, m) => acc + parseFloat(m.score), 0);
+            deptAvg = (sum / scoredDeptMembers.length).toFixed(1);
+        }
+
+        perfInfo.innerHTML = `
+            <div style="display:flex; flex-direction:column; width:100%; height:100%; box-sizing:border-box; transform: scale(0.9); transform-origin: top center;">
+                
+                <!-- Top Banner -->
+                <div style="background: linear-gradient(135deg, #3b60e4, #92d9ec); border-radius:16px; padding:30px 40px; display:flex; align-items:center; margin-bottom:30px;">
+                    <div style="width:90px; height:90px; border-radius:50%; background:#d1d5db; display:flex; align-items:center; justify-content:center; overflow:hidden; box-shadow: 0 0 0 3px rgba(255,255,255,0.3); margin-right:24px; flex-shrink:0;">
+                        ${member.id == 1 ? '<img src="Logo PILAR AKSI.png" style="width:100%; height:100%; object-fit:cover;">' : `<div style="font-size:32px; font-weight:800; color:#3b60e4;">${getInitials(member.name)}</div>`}
+                    </div>
+                    <div style="flex:1; display:flex; flex-direction:column;">
+                        <div style="font-family:'Plus Jakarta Sans',sans-serif; font-size:24px; font-weight:800; color:white; margin-bottom: 2px;">
+                            ${member.name}
+                        </div>
+                        <div style="font-size:14px; color:rgba(255,255,255,0.9); letter-spacing:0.5px; margin-bottom: 4px;">
+                            NRP. ${member.nrp}
+                        </div>
+                        <div style="font-size:14px; color:white; font-weight:600;">
+                            Departemen ${member.dept} &bull; ${posText}
+                        </div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:12px; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.8); margin-bottom:4px;">
+                            Assessment Period
+                        </div>
+                        <div style="font-size:16px; font-weight:700; color:white;">
+                            November 2026
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Below Banner -->
+                <div style="display:flex; flex-direction:row; gap:40px;">
+                    <!-- Left Side: Pilar -->
+                    <div style="flex:1; display:flex; flex-direction:column;">
+                        <div style="font-size:14px; font-weight:800; color:#8ba0b8; letter-spacing:0.5px; margin-bottom:24px;">
+                            SKOR PER PILAR
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:20px;">
+                            <!-- Pilar 1 -->
+                            <div>
+                                <div style="font-size:12px; font-weight:700; color:#4A5C7A; margin-bottom:8px;">P1 &bull; Adaptif &amp; Proaktif</div>
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <div style="flex:1; height:8px; background:#e0e7ee; border-radius:4px; overflow:hidden;">
+                                        <div style="height:100%; width:${(Math.min(p1Score / 22 * 100, 100))}%; background:#3b60e4; border-radius:4px;"></div>
+                                    </div>
+                                    <div style="font-size:13px; font-weight:800; color:#1a3a5c; min-width:46px; text-align:right;">${p1Score > 0 ? p1Score.toFixed(1) : '-'}<span style="font-size:10px; color:#8ba0b8; font-weight:600;">/22</span></div>
+                                </div>
+                            </div>
+                            <!-- Pilar 2 -->
+                            <div>
+                                <div style="font-size:12px; font-weight:700; color:#4A5C7A; margin-bottom:8px;">P2 &bull; Berdampak &amp; Bernilai</div>
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <div style="flex:1; height:8px; background:#e0e7ee; border-radius:4px; overflow:hidden;">
+                                        <div style="height:100%; width:${(Math.min(p2Score / 25 * 100, 100))}%; background:#eab308; border-radius:4px;"></div>
+                                    </div>
+                                    <div style="font-size:13px; font-weight:800; color:#1a3a5c; min-width:46px; text-align:right;">${p2Score > 0 ? p2Score.toFixed(1) : '-'}<span style="font-size:10px; color:#8ba0b8; font-weight:600;">/25</span></div>
+                                </div>
+                            </div>
+                            <!-- Pilar 3 -->
+                            <div>
+                                <div style="font-size:12px; font-weight:700; color:#4A5C7A; margin-bottom:8px;">P3 &bull; Humanis &amp; Kekeluargaan</div>
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <div style="flex:1; height:8px; background:#e0e7ee; border-radius:4px; overflow:hidden;">
+                                        <div style="height:100%; width:${(Math.min(p3Score / 23 * 100, 100))}%; background:#22c55e; border-radius:4px;"></div>
+                                    </div>
+                                    <div style="font-size:13px; font-weight:800; color:#1a3a5c; min-width:46px; text-align:right;">${p3Score > 0 ? p3Score.toFixed(1) : '-'}<span style="font-size:10px; color:#8ba0b8; font-weight:600;">/23</span></div>
+                                </div>
+                            </div>
+                            <!-- Pilar 4 -->
+                            <div>
+                                <div style="font-size:12px; font-weight:700; color:#4A5C7A; margin-bottom:8px;">P4 &bull; Optimalisasi &amp; Profesionalisme</div>
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <div style="flex:1; height:8px; background:#e0e7ee; border-radius:4px; overflow:hidden;">
+                                        <div style="height:100%; width:${(Math.min(p4Score / 30 * 100, 100))}%; background:#a855f7; border-radius:4px;"></div>
+                                    </div>
+                                    <div style="font-size:13px; font-weight:800; color:#1a3a5c; min-width:46px; text-align:right;">${p4Score > 0 ? p4Score.toFixed(1) : '-'}<span style="font-size:10px; color:#8ba0b8; font-weight:600;">/30</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="font-size:14px; font-weight:800; color:#8ba0b8; letter-spacing:0.5px; margin-top:40px; margin-bottom:12px;">
+                            BREAKDOWN INDIKATOR
+                        </div>
+                    </div>
+
+                    <!-- Right Side: Score & Ranking -->
+                    <div style="width:280px; display:flex; flex-direction:column; gap:24px;">
+                        <!-- Final Score Box -->
+                        <div style="background: linear-gradient(135deg, #3b60e4, #5E9EE8); box-shadow: 0 6px 18px rgba(59,96,228,0.25); padding: 24px; border-radius: 16px; display:flex; flex-direction:column; align-items:center;">
+                            <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.9);margin-bottom:12px;font-weight:600;">
+                                Final Score</div>
+                            <div style="color:#FFF8D6; font-size:64px; font-weight:800; line-height:1; font-family:'Plus Jakarta Sans',sans-serif; margin-bottom: 8px;">${totalScore > 0 ? totalScore : '-'}</div>
+                            <div style="color:rgba(255,255,255,.9); font-size:12px; margin-bottom: 12px; font-weight:500;">DARI 100</div>
+                            <div style="color:white; font-size:15px; font-weight:700; display:flex; align-items:center; gap:6px;">✦ ${band}</div>
+                        </div>
+
+                        <!-- Ranking Box -->
+                        <div style="padding:22px; border-radius:16px; border:1px solid #e0e7ee; box-shadow:0 6px 18px rgba(0,0,0,0.04); background:white;">
+                            <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#1a3a5c;font-weight:800;margin-bottom:16px;">
+                                Ranking</div>
+                            <div style="padding:10px 0; border-bottom:1px solid #e0e7ee; display:flex; justify-content:space-between; align-items:center;">
+                                <div style="font-size:12px; color:var(--text-muted); font-weight:500;">Dept. Ranking</div>
+                                <div style="color:#3b60e4; font-weight:800; font-size:15px;">#${deptRank} <span style="font-size:11px;color:var(--text-muted);font-weight:600;">/${deptMembers.length}</span></div>
+                            </div>
+                            <div style="padding:10px 0; border-bottom:1px solid #e0e7ee; display:flex; justify-content:space-between; align-items:center;">
+                                <div style="font-size:12px; color:var(--text-muted); font-weight:500;">Cabinet Ranking</div>
+                                <div style="color:#1a3a5c; font-weight:800; font-size:15px;">#${cabinetRank} <span style="font-size:11px;color:var(--text-muted);font-weight:600;">/${MEMBERS_DATA.length}</span></div>
+                            </div>
+                            <div style="padding-top:12px; display:flex; justify-content:space-between; align-items:center;">
+                                <div style="font-size:12px; color:var(--text-muted); font-weight:500;">Dept. Avg</div>
+                                <div style="font-size:14px; color:#1a3a5c; font-weight:700;">${deptAvg}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        `;
+    } catch (err) {
+        console.error("Error fetching assessment", err);
+    }
 }
