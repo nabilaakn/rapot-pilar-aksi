@@ -254,8 +254,8 @@
                         <!-- Diisi dinamis oleh app.js -->
                     </select>
                     <select class="filter-select">
-                        <option>Periode: Mid-Year 2024</option>
-                        <option>Year-End 2024</option>
+                        <option>Periode: Mid-Year 2026</option>
+                        <option>Year-End 2026</option>
                     </select>
                     <div style="flex:1"></div>
                     <span style="font-size:12px;color:var(--text-muted);">Total Score:
@@ -519,7 +519,7 @@
                 <div class="rp-page-nav">
                     <button class="page-nav-btn active" onclick="showReportPage(0, this)">Cover</button>
                     <button class="page-nav-btn" onclick="showReportPage(1, this)">Visi &amp; Misi</button>
-                    <button class="page-nav-btn" onclick="showReportPage(2, this)">Pesan Pimpinan</button>
+                    <button class="page-nav-btn" onclick="showReportPage(2, this)">Pesan KAHIMA</button>
                     <button class="page-nav-btn" onclick="showReportPage(3, this)">Performance</button>
                     <button class="page-nav-btn" onclick="showReportPage(4, this)">Feedback</button>
                     <button class="page-nav-btn" onclick="showReportPage(5, this)">Penutup</button>
@@ -541,202 +541,30 @@
                     </div>
 
                     <!-- Page 2: Visi & Misi -->
-                    <div class="rp-page" id="rp-1" style="display:none;padding:52px 60px;background:white;">
-                        <div style="border-bottom:2px solid var(--blue-50);padding-bottom:24px;margin-bottom:32px;">
-                            <div
-                                style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-600);font-weight:600;margin-bottom:8px;">
-                                Fondasi Organisasi</div>
-                            <div
-                                style="font-family:'Plus Jakarta Sans',sans-serif;font-size:26px;font-weight:800;color:var(--blue-900);">
-                                Visi &amp; Misi HMSI ITS</div>
-                        </div>
-                        <div style="margin-bottom:32px;">
-                            <div
-                                style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--blue-400);font-weight:700;margin-bottom:10px;">
-                                Visi</div>
-                            <div style="font-size:15px;font-weight:600;color:var(--text-primary);line-height:1.7;">
-                                Menjadi himpunan mahasiswa yang adaptif, berdampak, humanis, dan profesional dalam
-                                mencetak generasi Sistem Informasi yang unggul dan berkontribusi nyata bagi masyarakat.
-                            </div>
-                        </div>
-                        <div>
-                            <div
-                                style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--blue-400);font-weight:700;margin-bottom:14px;">
-                                Misi</div>
-                            <div style="display:flex;flex-direction:column;gap:10px;">
-                                <div
-                                    style="display:flex;gap:12px;align-items:flex-start;background:var(--blue-50);border-radius:10px;padding:14px 16px;">
-                                    <div
-                                        style="min-width:28px;height:28px;border-radius:50%;background:var(--blue-500);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;">
-                                        A</div>
-                                    <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">Membentuk
-                                        fungsionaris yang <b>Adaptif &amp; Proaktif</b> dalam menghadapi dinamika
-                                        organisasi dan perkembangan teknologi.</div>
-                                </div>
-                                <div
-                                    style="display:flex;gap:12px;align-items:flex-start;background:#FDF3C8;border-radius:10px;padding:14px 16px;">
-                                    <div
-                                        style="min-width:28px;height:28px;border-radius:50%;background:var(--gold-500);color:var(--blue-900);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;">
-                                        B</div>
-                                    <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">Mendorong
-                                        karya yang <b>Berdampak &amp; Bernilai</b> melalui program kerja yang inovatif
-                                        dan terukur.</div>
-                                </div>
-                                <div
-                                    style="display:flex;gap:12px;align-items:flex-start;background:#F0FDF4;border-radius:10px;padding:14px 16px;">
-                                    <div
-                                        style="min-width:28px;height:28px;border-radius:50%;background:#22C55E;color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;">
-                                        H</div>
-                                    <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">Membangun
-                                        budaya organisasi yang <b>Humanis &amp; Kekeluargaan</b> dengan mengedepankan
-                                        rasa saling menghargai.</div>
-                                </div>
-                                <div
-                                    style="display:flex;gap:12px;align-items:flex-start;background:#F5F3FF;border-radius:10px;padding:14px 16px;">
-                                    <div
-                                        style="min-width:28px;height:28px;border-radius:50%;background:#8B5CF6;color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;">
-                                        O</div>
-                                    <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">Mewujudkan
-                                        standar <b>Optimalisasi &amp; Profesionalisme</b> dalam setiap aspek
-                                        keorganisasian HMSI ITS.</div>
-                                </div>
-                            </div>
+                    <div class="rp-page" id="rp-1" style="display:none;position:relative;overflow:hidden;">
+                        <div class="cover-image-wrapper">
+                            <img src="VISI MISI.jpg" alt="Visi Misi" class="cover-image">
                         </div>
                     </div>
 
-                    <!-- Page 3: Pesan Pimpinan -->
-                    <div class="rp-page" id="rp-2" style="display:none;padding:52px 60px;background:white;">
-                        <div
-                            style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-600);font-weight:600;margin-bottom:8px;">
-                            Dari Kami</div>
-                        <div
-                            style="font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;font-weight:800;color:var(--blue-900);margin-bottom:32px;">
-                            Pesan dari Pimpinan HMSI</div>
-                        <div
-                            style="background:var(--blue-900);border-radius:16px;padding:32px;margin-bottom:28px;position:relative;overflow:hidden;">
-                            <div
-                                style="position:absolute;top:-20px;right:-10px;font-size:100px;color:rgba(255,255,255,.04);font-family:serif;">
-                                "</div>
-                            <div
-                                style="font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);font-style:italic;position:relative;z-index:1;">
-                                Setiap perjalanan dalam kabinet ini adalah bukti nyata dedikasi kalian. Laporan ini
-                                bukan sekadar angka — ia adalah cerminan dari seberapa besar kalian telah bertumbuh,
-                                berkontribusi, dan memberikan makna bagi HMSI. Terima kasih atas setiap langkah yang
-                                telah kalian ambil dengan penuh tanggung jawab.</div>
-                            <div
-                                style="margin-top:20px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;">
-                                <div
-                                    style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--gold-500),var(--gold-300));display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--blue-900);font-size:14px;">
-                                    AS</div>
-                                <div>
-                                    <div style="font-size:13px;font-weight:700;color:white;">Abrorus Shobah · Ketua Umum
-                                        HMSI ITS</div>
-                                    <div style="font-size:11px;color:rgba(255,255,255,.4);">Kabinet Pilar Aksi
-                                        2024/2025</div>
-                                </div>
-                            </div>
+                    <!-- Page 3: Pesan KAHIMA -->
+                    <div class="rp-page" id="rp-2" style="display:none;position:relative;overflow:hidden;">
+                        <div class="cover-image-wrapper">
+                            <img src="Pesan dari KAHIMA.png" alt="Pesan KAHIMA" class="cover-image">
                         </div>
                     </div>
 
                     <!-- Page 4: Performance Report -->
-                    <div class="rp-page perf-page" id="rp-3" style="display:none;">
-                        <div class="perf-header">
-                            <div class="perf-photo">AR</div>
-                            <div style="flex:1;">
-                                <div class="perf-name">Ahmad Rizky Pratama</div>
-                                <div class="perf-nrp">NRP: 5025220042</div>
-                                <div class="perf-dept">Departemen PTA · Staf Aktif</div>
-                            </div>
-                            <div style="text-align:right;">
-                                <div
-                                    style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.4);">
-                                    Assessment Period</div>
-                                <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.8);margin-top:2px;">
-                                    November 2024</div>
-                            </div>
+                    <div class="rp-page perf-page" id="rp-3"
+                        style="display:none;position:relative;overflow:hidden;background:#ffffff;padding:0;">
+                        <div class="cover-image-wrapper">
+                            <img src="Input Score & Overall.png" alt="Performance Background" class="cover-image">
                         </div>
-                        <div class="perf-body">
-                            <div class="perf-left">
-                                <div
-                                    style="font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);font-weight:600;margin-bottom:12px;">
-                                    Skor per Pilar</div>
-                                <div class="pilar-row">
-                                    <div class="pilar-name">P1 — Adaptif &amp; Proaktif</div>
-                                    <div class="pilar-bar">
-                                        <div class="progress-bar">
-                                            <div class="progress-fill" style="width:85%;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="pilar-score">18.7<span
-                                            style="font-size:9px;color:var(--text-muted);">/22</span></div>
-                                </div>
-                                <div class="pilar-row">
-                                    <div class="pilar-name">P2 — Berdampak &amp; Bernilai</div>
-                                    <div class="pilar-bar">
-                                        <div class="progress-bar">
-                                            <div class="progress-fill gold" style="width:88%;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="pilar-score">22.0<span
-                                            style="font-size:9px;color:var(--text-muted);">/25</span></div>
-                                </div>
-                                <div class="pilar-row">
-                                    <div class="pilar-name">P3 — Humanis &amp; Kekeluargaan</div>
-                                    <div class="pilar-bar">
-                                        <div class="progress-bar">
-                                            <div class="progress-fill green" style="width:91%;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="pilar-score">20.9<span
-                                            style="font-size:9px;color:var(--text-muted);">/23</span></div>
-                                </div>
-                                <div class="pilar-row">
-                                    <div class="pilar-name">P4 — Optimalisasi &amp; Prof.</div>
-                                    <div class="pilar-bar">
-                                        <div class="progress-bar">
-                                            <div class="progress-fill"
-                                                style="width:80%;background:linear-gradient(90deg,#8B5CF6,#C4B5FD);">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="pilar-score">24.0<span
-                                            style="font-size:9px;color:var(--text-muted);">/30</span></div>
-                                </div>
-                                <div style="height:1px;background:var(--border);margin:16px 0;"></div>
-                                <div
-                                    style="font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);font-weight:600;margin-bottom:10px;">
-                                    Breakdown Indikator</div>
-                                <canvas id="radarChart" height="200"></canvas>
-                            </div>
-                            <div class="perf-right">
-                                <div class="perf-score-main">
-                                    <div
-                                        style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.4);margin-bottom:8px;">
-                                        Final Score</div>
-                                    <div class="perf-score-num">85.6</div>
-                                    <div class="perf-score-label">dari 100</div>
-                                    <div class="perf-band">✦ Excellent</div>
-                                </div>
-                                <div class="perf-ranking">
-                                    <div
-                                        style="font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);font-weight:600;margin-bottom:10px;">
-                                        Ranking</div>
-                                    <div class="rank-row">
-                                        <div class="rank-row-label">Dept. Ranking</div>
-                                        <div class="rank-row-val" style="color:var(--gold-600);">#3<span
-                                                style="font-size:10px;color:var(--text-muted);">/16</span></div>
-                                    </div>
-                                    <div class="rank-row">
-                                        <div class="rank-row-label">Cabinet Ranking</div>
-                                        <div class="rank-row-val">#12<span
-                                                style="font-size:10px;color:var(--text-muted);">/156</span></div>
-                                    </div>
-                                    <div class="rank-row" style="border:none;">
-                                        <div class="rank-row-label">Dept. Avg</div>
-                                        <div class="rank-row-val" style="font-size:14px;">—</div>
-                                    </div>
-                                </div>
-                            </div>
+
+                        <!-- Tempat untuk konten skor & data dinamis (di-overlay di atas gambar) -->
+                        <div class="perf-info-section" id="perf-info-section"
+                            style="position:absolute; inset:0; z-index:2; padding:32px;">
+                            <!-- Data akan di-generate via JS / di-custom user -->
                         </div>
                     </div>
 
